@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>Deadline Watch — Super Productivity</title>
+<style>
+:root{
+ --ink:var(--text-color,#26382f);--muted:var(--text-color-muted,#76837a);
+ --accent:var(--c-primary,#547a64);--line:var(--divider-color,rgba(99,122,107,.21));
+ --surface:color-mix(in srgb,var(--card-bg,#fff) 76%,transparent);
+ --soft:color-mix(in srgb,var(--card-bg,#fff) 46%,transparent);
+ --highlight:color-mix(in srgb,var(--c-primary,#547a64) 8%,transparent);
+ --danger:var(--color-danger,#ad5049);
+ --font:var(--font-primary-stack,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{min-width:0;margin:0;background:transparent!important;color:var(--ink);font-family:var(--font)}
+body{min-height:100dvh;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+button:disabled{opacity:.55}
+.app{max-width:1080px;width:100%;margin:0 auto;padding:clamp(22px,3.4vw,44px) clamp(15px,4.4vw,55px) 60px}
+header{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:clamp(40px,5.4vw,66px)}
+.identity{display:flex;align-items:center;gap:11px;min-width:0}
+.logo{display:grid;place-items:center;width:42px;height:42px;flex:none;color:var(--accent)}
+.logo svg{display:block;width:100%;height:100%}
+.brand{font-size:17px;font-weight:750;letter-spacing:-.035em}
+.credit{font-size:11px;color:var(--muted);margin-top:4px}
+.header-side{display:flex;align-items:center;gap:14px}
+.date-now{font-size:12px;color:var(--muted);white-space:nowrap}
+.refresh{display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--soft);font-size:19px}
+.refresh:hover,.row-button:hover{background:var(--highlight)}
+.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:750;color:var(--accent);margin:0 0 11px}
+h1{font-size:clamp(34px,4.7vw,54px);letter-spacing:-.055em;font-weight:640;line-height:1.13;margin:0}
+.subhead{color:var(--muted);font-size:clamp(13px,1.55vw,15px);line-height:1.6;margin:12px 0 0}
+.hero{margin:0 0 24px}
+.overview{color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 22px}
+.overview strong{color:var(--ink);font-weight:730}
+.overview strong.alert{color:var(--danger)}
+.featured{padding:clamp(23px,3.6vw,38px);border-radius:20px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 35px rgba(21,46,33,.035);margin-bottom:35px;position:relative;overflow:hidden}
+.featured::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.featured.is-overdue::before{background:var(--danger)}
+.featured-head{color:var(--accent);font-size:11px;font-weight:780;letter-spacing:.12em;text-transform:uppercase;margin:0 0 22px}
+.featured.is-overdue .featured-head{color:var(--danger)}
+.featured-body{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center}
+.featured-button{display:block;border:0;background:transparent;text-align:left;padding:0;min-width:0}
+.featured-title{display:block;font-weight:680;letter-spacing:-.04em;font-size:clamp(23px,3.1vw,36px);line-height:1.25;overflow-wrap:anywhere}
+.featured-button:hover .featured-title{text-decoration:underline;text-underline-offset:4px}
+.featured-meta{display:block;color:var(--muted);font-size:12px;line-height:1.6;margin-top:12px}
+.featured-time{text-align:right;min-width:125px}
+.featured-number{font-size:clamp(27px,4.3vw,48px);font-weight:720;letter-spacing:-.05em;line-height:1.1;font-variant-numeric:tabular-nums}
+.featured.is-overdue .featured-number{color:var(--danger)}
+.featured.is-urgent:not(.is-overdue) .featured-number{color:var(--accent)}
+.featured-date{display:block;font-size:12px;color:var(--muted);margin-top:9px;line-height:1.5}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 2px 15px}
+h2{font-size:18px;letter-spacing:-.025em;font-weight:700;margin:0}
+.section-caption{font-size:12px;color:var(--muted)}
+.task-list{border-top:1px solid var(--line)}
+.item{display:grid;grid-template-columns:minmax(0,1fr) minmax(105px,170px);align-items:center;gap:14px;padding:18px 4px;border-bottom:1px solid var(--line)}
+.row-button{display:block;width:100%;padding:5px 2px;border:0;background:transparent;border-radius:6px;text-align:left;min-width:0}
+.item-title{display:block;font-weight:650;line-height:1.45;font-size:clamp(13px,1.45vw,16px);overflow-wrap:anywhere}
+.item-meta{display:block;color:var(--muted);font-size:11px;line-height:1.6;margin-top:5px}
+.row-count{text-align:right;min-width:0}
+.row-count strong{font-size:clamp(14px,1.9vw,19px);font-weight:740;display:block;line-height:1.4}
+.row-count.past strong{color:var(--danger)}
+.row-count.soon strong{color:var(--accent)}
+.row-count small{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-top:5px}
+.series-block{margin-top:52px}
+.series-caption{margin:9px 2px 20px;color:var(--muted);font-size:12px;line-height:1.65}
+.series-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(105px,170px);gap:14px;padding:15px 4px;border-bottom:1px solid var(--line);align-items:center}
+.series-title{font-size:14px;font-weight:580;line-height:1.45;overflow-wrap:anywhere}
+.series-meta{font-size:11px;color:var(--muted);margin-top:5px}
+.series-when{text-align:right}
+.series-when strong{font-weight:650;font-size:13px;display:block}
+.series-when small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.notice,.empty{border:1px solid var(--line);background:var(--soft);color:var(--muted);font-size:13px;line-height:1.6;border-radius:13px;padding:14px 16px;margin:0 0 20px}
+.notice.error{color:var(--danger)}
+.empty{padding:34px 20px;text-align:center}
+.empty strong{font-size:16px;color:var(--ink);display:block;margin-bottom:6px}
+.hidden{display:none!important}
+.footnote{font-size:11px;color:var(--muted);line-height:1.7;margin:30px 2px 0}
+@media(max-width:600px){
+ .app{padding:20px 15px 40px}
+ header{margin-bottom:39px}
+ .featured{padding:24px 20px;border-radius:16px;margin-bottom:31px}
+ .featured-body{grid-template-columns:minmax(0,1fr);gap:20px}
+ .featured-time{text-align:left;min-width:0}
+ .featured-number{font-size:32px}
+ .featured-head{margin-bottom:17px}
+ .item,.series-row{grid-template-columns:minmax(0,1fr) 104px;gap:8px}
+}
+@media(max-width:350px){
+ .app{padding-left:12px;padding-right:12px}
+ .date-now{display:none}
+ .item,.series-row{grid-template-columns:minmax(0,1fr) 98px}
+ .item-title{font-size:13px}
+ .row-count strong{font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="identity">
+      <div class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="12" width="43" height="42" rx="8"/><path d="M15 6v12M36 6v12M5 24h43"/>
+        <circle cx="42" cy="41" r="17" fill="var(--surface,#fff)"/><path d="M42 31v11l7 5"/>
+      </svg></div>
+      <div><div class="brand">Deadline Watch</div><div class="credit">for Super Productivity</div></div>
+    </div>
+    <div class="header-side"><span class="date-now" id="today-date"></span><button type="button" class="refresh" id="refresh" aria-label="Refresh deadlines" title="Refresh">↻</button></div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">A LITTLE SPACE TO STAY AHEAD</p>
+    <h1>Know what's coming.</h1>
+    <p class="subhead">Every deadline, in view. The nearest one deserves your attention.</p>
+  </section>
+  <div class="overview" aria-label="Deadline summary">
+    <span><strong id="overdue-count">0</strong> overdue</span>
+    <span><strong id="soon-count">0</strong> within 7 days</span>
+    <span><strong id="total-count">0</strong> open deadlines</span>
+  </div>
+  <div class="notice hidden" id="demo-note">Preview data only. Install in Super Productivity to see your deadlines.</div>
+  <div class="notice error hidden" id="error-note" role="alert"></div>
+
+  <section class="featured hidden" id="featured" aria-label="Nearest deadline" aria-live="polite"></section>
+
+  <section aria-label="Task deadlines">
+    <div class="section-head"><h2>On the horizon</h2><span id="remaining-count" class="section-caption"></span></div>
+    <div class="task-list" id="list" aria-live="polite" aria-busy="false"></div>
+    <div id="empty" class="empty hidden"><strong>Room to breathe.</strong>No unfinished tasks with deadlines right now.</div>
+  </section>
+
+  <section class="series-block hidden" id="series-section" aria-label="Recurring series end dates">
+    <div class="section-head"><h2>Series ending</h2><span id="series-count" class="section-caption"></span></div>
+    <p class="series-caption">An “Ends on” date marks the last recurrence, not a task deadline.</p>
+    <div id="series-list" class="task-list"></div>
+  </section>
+  <p class="footnote">Work scheduled for a day is not necessarily due that day. Deadline Watch only counts actual task deadlines; completed tasks are omitted.</p>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+
+/* BEGIN_CORE */
+const DAY_MS = 86400000;
+function localDay(date) {
+  return [date.getFullYear(), String(date.getMonth()+1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+}
+function parseDay(str) {
+  if(typeof str!=="string" || !/^\d{4}-\d{2}-\d{2}$/.test(str)) return null;
+  const parts=str.split("-").map(Number), date=new Date(parts[0],parts[1]-1,parts[2]);
+  if(date.getFullYear()!==parts[0] || date.getMonth()!==parts[1]-1 || date.getDate()!==parts[2]) return null;
+  return date;
+}
+function calendarNumber(date) {
+  return Math.floor(Date.UTC(date.getFullYear(),date.getMonth(),date.getDate())/DAY_MS);
+}
+function dateInfo(day,clock) {
+  const hasTime=typeof clock==="number" && Number.isFinite(clock) && clock>0;
+  const date=hasTime?new Date(clock):parseDay(day);
+  if(!date || Number.isNaN(date.getTime())) return null;
+  const timestamp=hasTime?date.getTime():new Date(date.getFullYear(),date.getMonth(),date.getDate(),23,59,59,999).getTime();
+  return {date:date,timestamp:timestamp,hasTime:hasTime};
+}
+function calculateCountdown(info,now,kind) {
+  const days=calendarNumber(info.date)-calendarNumber(now);
+  const isPast=info.hasTime?info.timestamp<now.getTime():days<0;
+  if(kind==="series") {
+    if(days<0) return {days:days,state:"past",label:"Series ended",detail:Math.abs(days)+"d ago"};
+    if(days===0)return {days:days,state:"soon",label:"Series ends today",detail:"Today"};
+    if(days===1)return {days:days,state:"soon",label:"Series ends tomorrow",detail:"1 day left"};
+    return {days:days,state:days<=7?"soon":"later",label:"Series ends",detail:days+" days left"};
+  }
+  if(isPast) return {days:days,state:"past",label:days<0?"Overdue · "+Math.abs(days)+"d":"Overdue today",detail:"Take action"};
+  if(days===0)return {days:days,state:"soon",label:"Due today",detail:"0 days left"};
+  if(days===1)return {days:days,state:"soon",label:"1 day left",detail:"Due tomorrow"};
+  return {days:days,state:days<=7?"soon":"later",label:days+" days left",detail:"Until deadline"};
+}
+function buildEntries(snapshot,now) {
+  const tasks=Object.values(snapshot.tasks||{}).filter(Boolean);
+  const projects=snapshot.projects||{};
+  const configs=Object.values(snapshot.taskRepeatCfgs||{}).filter(Boolean);
+  const entries=[];
+  for(const task of tasks) {
+    if(task.isDone || !task.id)continue;
+    const info=dateInfo(task.deadlineDay,task.deadlineWithTime);
+    if(!info)continue;
+    const remaining=calculateCountdown(info,now,"task");
+    const project=task.projectId && projects[task.projectId] ? projects[task.projectId].title : "No project";
+    entries.push({key:"task:"+task.id,kind:"task",taskId:task.id,title:task.title||"Untitled task",
+      project:project||"No project",isRecurring:!!task.repeatCfgId,
+      info:info,remaining:remaining});
+  }
+  for(const cfg of configs) {
+    if(cfg.isPaused || !cfg.id || !cfg.repeatUntilDay)continue;
+    const info=dateInfo(cfg.repeatUntilDay,null);
+    if(!info)continue;
+    // Ended series should not crowd out overdue actionable task deadlines.
+    if(calendarNumber(info.date)<calendarNumber(now))continue;
+    const remaining=calculateCountdown(info,now,"series");
+    const project=cfg.projectId && projects[cfg.projectId] ? projects[cfg.projectId].title : "No project";
+    entries.push({key:"series:"+cfg.id,kind:"series",taskId:null,title:cfg.title||"Recurring task",
+      project:project||"No project",isRecurring:true,info:info,remaining:remaining});
+  }
+  entries.sort((a,b)=>a.info.timestamp-b.info.timestamp || (a.kind==="task"?-1:1) || a.title.localeCompare(b.title));
+  return entries;
+}
+/* END_CORE */
+
+const state={api:window.PluginAPI||null,filter:"all",entries:[],refreshing:false,pointerActive:false,pending:false,demo:false};
+function setText(id,value){$(id).textContent=String(value);}
+function formattedDate(info) {
+  const format={month:"short",day:"numeric",year:"numeric"};
+  if(info.hasTime){format.hour="2-digit";format.minute="2-digit";}
+  return info.date.toLocaleString(undefined,format);
+}
+function elem(tag,className,textValue){
+  const el=document.createElement(tag);
+  if(className)el.className=className;
+  if(textValue!==undefined)el.textContent=String(textValue);
+  return el;
+}
+function buildRow(entry) {
+  const row=elem("div","item");
+  const btn=elem("button","row-button");
+  btn.type="button";
+  btn.dataset.taskId=entry.taskId;
+  btn.setAttribute("aria-label","Open task: "+entry.title);
+  btn.appendChild(elem("span","item-title",entry.title));
+  btn.appendChild(elem("span","item-meta",entry.project+(entry.isRecurring?" · Recurring task":"")));
+  row.appendChild(btn);
+  const right=elem("div","row-count "+entry.remaining.state);
+  right.appendChild(elem("strong","",entry.remaining.label));
+  right.appendChild(elem("small","",formattedDate(entry.info)));
+  row.appendChild(right);
+  return row;
+}
+function buildFeature(entry) {
+  const box=elem("div","featured-body");
+  const btn=elem("button","featured-button");
+  btn.type="button";
+  btn.dataset.taskId=entry.taskId;
+  btn.setAttribute("aria-label","Open nearest deadline task: "+entry.title);
+  btn.appendChild(elem("span","featured-title",entry.title));
+  btn.appendChild(elem("span","featured-meta",entry.project+(entry.isRecurring?" · Recurring task":"")));
+  box.appendChild(btn);
+  const countdown=elem("div","featured-time");
+  countdown.appendChild(elem("strong","featured-number",entry.remaining.label));
+  countdown.appendChild(elem("span","featured-date","Deadline · "+formattedDate(entry.info)));
+  box.appendChild(countdown);
+  return box;
+}
+function buildSeriesRow(entry) {
+  const row=elem("div","series-row");
+  const left=elem("div","");
+  left.appendChild(elem("div","series-title",entry.title));
+  left.appendChild(elem("div","series-meta",entry.project));
+  row.appendChild(left);
+  const right=elem("div","series-when");
+  const ending=entry.remaining.days===0?"Ends today":entry.remaining.days===1?"Ends tomorrow":"Ends in "+entry.remaining.days+" days";
+  right.appendChild(elem("strong","",ending));
+  right.appendChild(elem("small","",formattedDate(entry.info)));
+  row.appendChild(right);
+  return row;
+}
+function render() {
+  if(state.pointerActive){state.pending=true;return;}
+  const now=new Date();
+  setText("today-date",now.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}));
+  state.entries.forEach(e=>{e.remaining=calculateCountdown(e.info,now,e.kind);});
+  const tasks=state.entries.filter(e=>e.kind==="task");
+  const series=state.entries.filter(e=>e.kind==="series");
+  const overdue=tasks.filter(e=>e.remaining.state==="past").length;
+  setText("overdue-count",overdue);
+  $("overdue-count").classList.toggle("alert",overdue>0);
+  setText("soon-count",tasks.filter(e=>e.remaining.days>=0&&e.remaining.days<=7).length);
+  setText("total-count",tasks.length);
+  const first=tasks[0];
+  const feature=$("featured");
+  feature.classList.toggle("hidden",!first);
+  if(first){
+    feature.classList.toggle("is-overdue",first.remaining.state==="past");
+    feature.classList.toggle("is-urgent",first.remaining.days<=7);
+    const head=elem("div","featured-head",first.remaining.state==="past"?"Attention · Overdue":"Your next deadline");
+    feature.replaceChildren(head,buildFeature(first));
+  }else{feature.replaceChildren();}
+  const rest=tasks.slice(1),list=$("list"),fragment=document.createDocumentFragment();
+  rest.forEach(e=>fragment.appendChild(buildRow(e)));
+  list.replaceChildren(fragment);
+  setText("remaining-count",rest.length?rest.length+" more":"");
+  $("empty").classList.toggle("hidden",tasks.length!==0);
+  const seriesBox=$("series-section"),seriesList=$("series-list");
+  seriesBox.classList.toggle("hidden",series.length===0);
+  setText("series-count",series.length+" series");
+  const seriesFragment=document.createDocumentFragment();
+  series.forEach(e=>seriesFragment.appendChild(buildSeriesRow(e)));
+  seriesList.replaceChildren(seriesFragment);
+}
+
+function preview() {
+  const now=new Date();
+  const offset=(n)=>{const x=new Date(now.getFullYear(),now.getMonth(),now.getDate()+n);return localDay(x);};
+  return {projects:{work:{title:"Work"},home:{title:"Personal"}},
+    tasks:{
+      a:{id:"a",title:"Send quarterly financial report",projectId:"work",deadlineDay:offset(-2),isDone:false},
+      b:{id:"b",title:"Renew home insurance",projectId:"home",deadlineDay:offset(0),isDone:false},
+      c:{id:"c",title:"Prepare client presentation",projectId:"work",deadlineDay:offset(3),isDone:false},
+      d:{id:"d",title:"Book annual health check",projectId:"home",deadlineDay:offset(13),isDone:false},
+      e:{id:"e",title:"Daily check-in",projectId:"work",dueDay:offset(0),isDone:false,repeatCfgId:"r"}
+    },taskRepeatCfgs:{r:{id:"r",title:"Daily check-in",projectId:"work",repeatUntilDay:offset(6),isPaused:false}}};
+}
+function errorMessage(err){
+  $("error-note").textContent="Could not load deadlines: "+String(err&&err.message||err);
+  $("error-note").classList.remove("hidden");
+}
+async function refresh() {
+  if(state.pointerActive){state.pending=true;return;}
+  if(state.refreshing){state.pending=true;return;}
+  state.refreshing=true;$("refresh").disabled=true;$("list").setAttribute("aria-busy","true");
+  try {
+    let snapshot;
+    if(state.api&&typeof state.api.getAppState==="function")snapshot=await state.api.getAppState();
+    else if(!state.api){snapshot=preview();state.demo=true;$("demo-note").classList.remove("hidden");}
+    else throw new Error("This version of Super Productivity does not provide the getAppState API.");
+    if(!snapshot || !snapshot.tasks)throw new Error("Unexpected task data");
+    state.entries=buildEntries(snapshot,new Date());
+    $("error-note").classList.add("hidden");
+    // Render only once after a refresh; do not re-render while a pointer is pressed.
+    if(state.pointerActive)state.pending=true;
+    else render();
+  }catch(err){errorMessage(err);}
+  finally{state.refreshing=false;$("refresh").disabled=false;$("list").setAttribute("aria-busy","false");if(state.pending&&!state.pointerActive){state.pending=false;scheduleRefresh();}}
+}
+let deferred=null;
+function scheduleRefresh() {
+  if(state.pointerActive){state.pending=true;return;}
+  if(deferred)clearTimeout(deferred);
+  deferred=setTimeout(()=>{deferred=null;void refresh();},240);
+}
+document.addEventListener("pointerdown",()=>{state.pointerActive=true;},true);
+function releasePointer() {
+  state.pointerActive=false;
+  if(state.pending){state.pending=false;scheduleRefresh();}
+}
+document.addEventListener("pointerup",releasePointer,true);
+document.addEventListener("pointercancel",releasePointer,true);
+document.addEventListener("click",event=>{
+  const target=event.target.closest("[data-task-id]");
+  if(target&&state.api&&typeof state.api.selectTask==="function"){
+    void state.api.selectTask(target.dataset.taskId).catch(errorMessage);
+  }
+});
+
+$("refresh").addEventListener("click",()=>void refresh());
+window.addEventListener("focus",scheduleRefresh);
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)scheduleRefresh();});
+if(state.api&&typeof state.api.registerHook==="function"&&state.api.Hooks){
+  for(const name of ["TASK_CREATED","TASK_UPDATE","TASK_COMPLETE","TASK_DELETE"]){
+    if(state.api.Hooks[name])try{state.api.registerHook(state.api.Hooks[name],scheduleRefresh);}catch(err){console.warn("Deadline Watch hook not available",err);}
+  }
+}
+void refresh();
+setInterval(()=>{if(document.visibilityState!=="hidden")scheduleRefresh();else render();},30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "id": "sp-deadline-watch",
+  "name": "Deadline Watch",
+  "version": "1.0.0",
+  "description": "A calm dashboard for approaching task deadlines and recurring series end dates.",
+  "manifestVersion": 1,
+  "minSupVersion": "14.0.0",
+  "author": "phuongtt2a",
+  "icon": "icon.svg",
+  "iFrame": true,
+  "sidePanel": false,
+  "permissions": [
+    "getAppState",
+    "selectTask"
+  ],
+  "hooks": [
+    "taskCreated",
+    "taskUpdate",
+    "taskComplete",
+    "taskDelete"
+  ]
+}
