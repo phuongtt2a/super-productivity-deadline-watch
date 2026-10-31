@@ -74,47 +74,38 @@ button:disabled{opacity:.45;cursor:wait}
 </style>
 </head>
 <body>
-<div class="app">
-  <header>
-    <div class="identity">
-      <div class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="5" y="12" width="43" height="42" rx="8"/><path d="M15 6v12M36 6v12M5 24h43"/>
-        <circle cx="42" cy="41" r="17" fill="var(--surface,#fff)"/><path d="M42 31v11l7 5"/>
-      </svg></div>
-      <div><div class="brand">Deadline Watch</div><div class="credit">for Super Productivity</div></div>
+<main class="app">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+<rect width="64" height="64" rx="16" fill="#4d7560"/>
+<rect x="14" y="17" width="36" height="34" rx="5" fill="none" stroke="#f7faf6" stroke-width="3"/>
+<path d="M21 12v10m22-10v10M14 30h36" stroke="#f7faf6" stroke-width="3" stroke-linecap="round"/>
+<circle cx="40" cy="42" r="10" fill="#4d7560" stroke="#f7faf6" stroke-width="3"/>
+<path d="M40 36v6l5 3" fill="none" stroke="#f7faf6" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/>
+</svg></div>
+      <div><div class="brand-name">Deadline Watch</div><div class="brand-credit">Deadlines · by phuongtt2a</div></div>
     </div>
-    <div class="header-side"><span class="date-now" id="today-date"></span><button type="button" class="refresh" id="refresh" aria-label="Refresh deadlines" title="Refresh">↻</button></div>
+    <div class="top-right">
+      <div class="today-date" id="today-date"></div>
+      <button type="button" class="refresh" id="refresh" title="Refresh deadlines" aria-label="Refresh deadlines">↻</button>
+    </div>
   </header>
-
-  <section class="hero">
-    <p class="eyebrow">A LITTLE SPACE TO STAY AHEAD</p>
-    <h1>Know what's coming.</h1>
-    <p class="subhead">Every deadline, in view. The nearest one deserves your attention.</p>
-  </section>
-  <div class="overview" aria-label="Deadline summary">
-    <span><strong id="overdue-count">0</strong> overdue</span>
+  <div class="summary-line" aria-label="Deadline summary">
+    <span id="overdue-summary"><strong id="overdue-count">0</strong> overdue</span>
+    <span class="tiny-dot" aria-hidden="true"></span>
     <span><strong id="soon-count">0</strong> within 7 days</span>
-    <span><strong id="total-count">0</strong> open deadlines</span>
+    <span class="tiny-dot" aria-hidden="true"></span>
+    <span><strong id="total-count">0</strong> dates to watch</span>
   </div>
-  <div class="notice hidden" id="demo-note">Preview data only. Install in Super Productivity to see your deadlines.</div>
-  <div class="notice error hidden" id="error-note" role="alert"></div>
-
-  <section class="featured hidden" id="featured" aria-label="Nearest deadline" aria-live="polite"></section>
-
-  <section aria-label="Task deadlines">
-    <div class="section-head"><h2>On the horizon</h2><span id="remaining-count" class="section-caption"></span></div>
-    <div class="task-list" id="list" aria-live="polite" aria-busy="false"></div>
-    <div id="empty" class="empty hidden"><strong>Room to breathe.</strong>No unfinished tasks with deadlines right now.</div>
+  <p class="notice hidden" id="demo-note">Preview data only. Install in Super Productivity to see your deadlines.</p>
+  <p class="notice error hidden" id="error-note" role="alert"></p>
+  <section aria-label="Task deadlines and recurring series end dates">
+    <ol class="timeline" id="list" aria-live="polite" aria-busy="false"></ol>
+    <div class="empty hidden" id="empty"><strong>Room to breathe.</strong>No upcoming deadlines or series end dates right now.</div>
   </section>
-
-  <section class="series-block hidden" id="series-section" aria-label="Recurring series end dates">
-    <div class="section-head"><h2>Series ending</h2><span id="series-count" class="section-caption"></span></div>
-    <p class="series-caption">An “Ends on” date marks the last recurrence, not a task deadline.</p>
-    <div id="series-list" class="task-list"></div>
-  </section>
-  <p class="footnote">Work scheduled for a day is not necessarily due that day. Deadline Watch only counts actual task deadlines; completed tasks are omitted.</p>
-</div>
-
+  <p class="footnote">Series ends = the last recurring occurrence, not an individual task deadline. Scheduled work dates are not deadlines.</p>
+</main>
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
