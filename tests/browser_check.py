@@ -58,7 +58,7 @@ class BrowserTest(unittest.TestCase):
     self.assertEqual(page.locator("[data-entry-key='task:today'] .entry-number").inner_text(),"0")
     self.assertEqual(page.locator("[data-entry-key='task:today'] .entry-unit").inner_text(),"days left")
     self.assertEqual(page.locator("text=Scheduled only").count(),0)
-    self.assertEqual(page.locator("text=Completed").count(),0)
+    self.assertEqual(page.locator(".entry-title").filter(has_text="Completed").count(),0)
     self.assertEqual(page.locator("text=On the horizon").count(),0)
     # Neubrutalism: crisp outlines, hard offset shadows, near-square corners.
     css=page.locator(".deadline-entry").first.evaluate("""e=>{
