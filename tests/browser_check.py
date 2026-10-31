@@ -51,6 +51,8 @@ class BrowserTest(unittest.TestCase):
     self.assertEqual(page.locator(".deadline-entry.rank-2").count(),1)
     self.assertEqual(page.locator("#overdue-count").inner_text(),"1")
     self.assertEqual(page.locator("#total-count").inner_text(),"5")
+    self.assertEqual(page.locator("[data-entry-key='task:today'] .entry-number").inner_text(),"0")
+    self.assertEqual(page.locator("[data-entry-key='task:today'] .entry-unit").inner_text(),"days left")
     self.assertEqual(page.locator("text=Scheduled only").count(),0)
     self.assertEqual(page.locator("text=Completed").count(),0)
     self.assertEqual(page.locator("text=On the horizon").count(),0)
@@ -75,6 +77,9 @@ class BrowserTest(unittest.TestCase):
      self.assertLessEqual(card["right"],width+1,(width,card))
     for right in metrics["counters"]:
      self.assertLessEqual(right,width+1,(width,right))
+    gaps=page.locator(".deadline-entry").evaluate_all("nodes=>nodes.map(e=>e.querySelector('.entry-title').getBoundingClientRect().left-e.querySelector('.entry-index').getBoundingClientRect().right)")
+    for gap in gaps:
+     self.assertGreaterEqual(gap,7,(width,gap))
     page.locator("[data-task-id='overdue']").click()
     page.wait_for_function("window.__selected==='overdue'")
     page.locator("[data-task-id='today']").click()
