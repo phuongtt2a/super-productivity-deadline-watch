@@ -19,11 +19,15 @@ class PluginTests(unittest.TestCase):
         script=html.split("<script>",1)[1].split("</script>",1)[0]
         result=subprocess.run(["node","--check"],input=script,text=True,capture_output=True)
         self.assertEqual(result.returncode,0,result.stderr)
-        for term in ("deadlineDay","deadlineWithTime","repeatUntilDay","getAppState()","selectTask(","BEGIN_CORE","END_CORE","Series ends","deadline-entry","entry-number","rank-0"):
+        for term in ("deadlineDay","deadlineWithTime","repeatUntilDay","getAppState()","selectTask(","BEGIN_CORE","END_CORE","Repeats until","deadline-entry","entry-number","rank-0"):
             self.assertIn(term,html)
         self.assertIn("background:transparent!important",html)
         self.assertIn("width:min(1220px,100%)",html)
         self.assertNotIn("On the horizon",html)
+        self.assertIn("All your important dates, in one place.",html)
+        self.assertIn('entry.kind==="series"?"Repeats until":"Task"',html)
+        self.assertIn("box-shadow:6px 6px 0 var(--neo-ink)",html)
+        self.assertIn("@media(max-width:360px)",html)
         self.assertNotIn("Know what\u0027s coming.",html)
         self.assertNotIn("id=\"series-section\"",html)
         self.assertNotIn("deadlineDay:task.dueDay",html)
