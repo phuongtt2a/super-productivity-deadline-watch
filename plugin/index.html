@@ -171,12 +171,12 @@ function buildEntries(snapshot,now) {
     entries.push({key:"series:"+cfg.id,kind:"series",taskId:null,title:cfg.title||"Recurring task",
       project:project||"No project",isRecurring:true,info:info,remaining:remaining});
   }
-  entries.sort((a,b)=>a.info.timestamp-b.info.timestamp || (a.kind==="task"?-1:1) || a.title.localeCompare(b.title));
+  entries.sort((a,b)=>a.info.timestamp-b.info.timestamp || (a.kind===b.kind?a.title.localeCompare(b.title):(a.kind==="task"?-1:1)));
   return entries;
 }
 /* END_CORE */
 
-const state={api:window.PluginAPI||null,filter:"all",entries:[],refreshing:false,pointerActive:false,pending:false,demo:false};
+const state={api:window.PluginAPI||null,entries:[],refreshing:false,pointerActive:false,pending:false,demo:false};
 function setText(id,value){$(id).textContent=String(value);}
 function formattedDate(info) {
   const format={month:"short",day:"numeric",year:"numeric"};
@@ -189,46 +189,52 @@ function elem(tag,className,textValue){
   if(textValue!==undefined)el.textContent=String(textValue);
   return el;
 }
-function buildRow(entry) {
-  const row=elem("div","item");
-  const btn=elem("button","row-button");
-  btn.type="button";
-  btn.dataset.taskId=entry.taskId;
-  btn.setAttribute("aria-label","Open task: "+entry.title);
-  btn.appendChild(elem("span","item-title",entry.title));
-  btn.appendChild(elem("span","item-meta",entry.project+(entry.isRecurring?" · Recurring task":"")));
-  row.appendChild(btn);
-  const right=elem("div","row-count "+entry.remaining.state);
-  right.appendChild(elem("strong","",entry.remaining.label));
-  right.appendChild(elem("small","",formattedDate(entry.info)));
-  row.appendChild(right);
-  return row;
+
+function countdownVisual(entry) {
+  const days=entry.remaining.days;
+  if(entry.kind==="series"){
+    if(days===0)return {number:"Today",unit:"Series ends"};
+    if(days===1)return {number:"1",unit:"day left"};
+    return {number:String(days),unit:"days left"};
+  }
+  if(entry.remaining.state==="past"){
+    return days<0
+      ? {number:String(Math.abs(days)),unit:Math.abs(days)===1?"day overdue":"days overdue"}
+      : {number:"Today",unit:"Overdue · time passed"};
+  }
+  if(days===0)return {number:"Today",unit:"Due today"};
+  if(days===1)return {number:"1",unit:"day left"};
+  return {number:String(days),unit:"days left"};
 }
-function buildFeature(entry) {
-  const box=elem("div","featured-body");
-  const btn=elem("button","featured-button");
-  btn.type="button";
-  btn.dataset.taskId=entry.taskId;
-  btn.setAttribute("aria-label","Open nearest deadline task: "+entry.title);
-  btn.appendChild(elem("span","featured-title",entry.title));
-  btn.appendChild(elem("span","featured-meta",entry.project+(entry.isRecurring?" · Recurring task":"")));
-  box.appendChild(btn);
-  const countdown=elem("div","featured-time");
-  countdown.appendChild(elem("strong","featured-number",entry.remaining.label));
-  countdown.appendChild(elem("span","featured-date","Deadline · "+formattedDate(entry.info)));
-  box.appendChild(countdown);
-  return box;
-}
-function buildSeriesRow(entry) {
-  const row=elem("div","series-row");
-  const left=elem("div","");
-  left.appendChild(elem("div","series-title",entry.title));
-  left.appendChild(elem("div","series-meta",entry.project));
-  row.appendChild(left);
-  const right=elem("div","series-when");
-  const ending=entry.remaining.days===0?"Ends today":entry.remaining.days===1?"Ends tomorrow":"Ends in "+entry.remaining.days+" days";
-  right.appendChild(elem("strong","",ending));
-  right.appendChild(elem("small","",formattedDate(entry.info)));
+function buildRow(entry,index) {
+  const tone=entry.kind==="series" ? "series"
+    :entry.remaining.state==="past" ? "overdue"
+    :entry.remaining.days===0 ? "today"
+    :entry.remaining.days<=7 ? "soon":"later";
+  const row=elem("li","deadline-entry rank-"+Math.min(index,3)+" tone-"+tone+" kind-"+entry.kind);
+  row.dataset.entryKey=entry.key;
+  row.dataset.kind=entry.kind;
+  row.appendChild(elem("span","entry-index",String(index+1).padStart(2,"0")));
+  const main=elem("div","entry-main");
+  const buttonOrText=elem(entry.kind==="task"?"button":"div",entry.kind==="task"?"entry-action":"entry-static");
+  if(entry.kind==="task"){
+    buttonOrText.type="button";
+    buttonOrText.dataset.taskId=entry.taskId;
+    buttonOrText.setAttribute("aria-label","Open task: "+entry.title);
+  }
+  buttonOrText.appendChild(elem("span","entry-title",entry.title));
+  main.appendChild(buttonOrText);
+  const details=elem("div","entry-details");
+  details.appendChild(elem("span","entry-project",entry.project));
+  details.appendChild(elem("span","entry-tag",entry.kind==="series"?"Series ends":"Deadline"));
+  if(entry.kind==="task"&&entry.isRecurring)details.appendChild(elem("span","entry-tag repeat","Repeats"));
+  main.appendChild(details);
+  row.appendChild(main);
+  const right=elem("div","entry-countdown");
+  const visual=countdownVisual(entry);
+  right.appendChild(elem("strong","entry-number",visual.number));
+  right.appendChild(elem("div","entry-unit",visual.unit));
+  right.appendChild(elem("div","entry-date",(entry.kind==="series"?"Ends on · ":"Deadline · ")+formattedDate(entry.info)));
   row.appendChild(right);
   return row;
 }
@@ -237,33 +243,15 @@ function render() {
   const now=new Date();
   setText("today-date",now.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}));
   state.entries.forEach(e=>{e.remaining=calculateCountdown(e.info,now,e.kind);});
-  const tasks=state.entries.filter(e=>e.kind==="task");
-  const series=state.entries.filter(e=>e.kind==="series");
-  const overdue=tasks.filter(e=>e.remaining.state==="past").length;
+  const overdue=state.entries.filter(e=>e.kind==="task"&&e.remaining.state==="past").length;
   setText("overdue-count",overdue);
-  $("overdue-count").classList.toggle("alert",overdue>0);
-  setText("soon-count",tasks.filter(e=>e.remaining.days>=0&&e.remaining.days<=7).length);
-  setText("total-count",tasks.length);
-  const first=tasks[0];
-  const feature=$("featured");
-  feature.classList.toggle("hidden",!first);
-  if(first){
-    feature.classList.toggle("is-overdue",first.remaining.state==="past");
-    feature.classList.toggle("is-urgent",first.remaining.days<=7);
-    const head=elem("div","featured-head",first.remaining.state==="past"?"Attention · Overdue":"Your next deadline");
-    feature.replaceChildren(head,buildFeature(first));
-  }else{feature.replaceChildren();}
-  const rest=tasks.slice(1),list=$("list"),fragment=document.createDocumentFragment();
-  rest.forEach(e=>fragment.appendChild(buildRow(e)));
-  list.replaceChildren(fragment);
-  setText("remaining-count",rest.length?rest.length+" more":"");
-  $("empty").classList.toggle("hidden",tasks.length!==0);
-  const seriesBox=$("series-section"),seriesList=$("series-list");
-  seriesBox.classList.toggle("hidden",series.length===0);
-  setText("series-count",series.length+" series");
-  const seriesFragment=document.createDocumentFragment();
-  series.forEach(e=>seriesFragment.appendChild(buildSeriesRow(e)));
-  seriesList.replaceChildren(seriesFragment);
+  $("overdue-summary").classList.toggle("has-overdue",overdue>0);
+  setText("soon-count",state.entries.filter(e=>e.remaining.days>=0&&e.remaining.days<=7).length);
+  setText("total-count",state.entries.length);
+  const fragment=document.createDocumentFragment();
+  state.entries.forEach((entry,index)=>fragment.appendChild(buildRow(entry,index)));
+  $("list").replaceChildren(fragment);
+  $("empty").classList.toggle("hidden",state.entries.length!==0);
 }
 
 function preview() {
