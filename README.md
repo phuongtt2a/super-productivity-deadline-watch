@@ -10,9 +10,9 @@ Deadline Watch is an independent, read-only dashboard for [Super Productivity](h
 - **Gradual visual emphasis:** The first, second and third items progressively decrease in font size and accent intensity, while overdue items have a warmer warning palette. Every entry still shows its precise date and days remaining.
 - Calendar-day countdowns: overdue, due today, tomorrow, or days left. Exact deadline times are shown when set.
 - Project names and a direct click to open an individual task in Super Productivity.
-- Recurring series **Ends on** dates appear inline in the timeline with a **Series ends** label and the number of days left.
+- Recurring series **Ends on** dates appear inline with a clear **Repeats until** label, last repeat date, and days left. Normal deadlines carry a **Task** label.
 - **Quiet summary:** Overdue, near-term, and total date counts in a compact line under the header, without unnecessary marketing headings.
-- **NEO/Zen visual language:** Muted greens, terracotta, gold, teal, and lilac distinguish urgency and series ends. The icon, 1220px page width and header align with Today+ and Five, while preserving the host's wallpaper and font. Browser checks cover 320px to 1200px.
+- **Neo-brutalist, but readable:** Solid coral, golden yellow, mint, blue and lilac; crisp 2–3px outlines; square tags; bold editorial type; and hard offset shadows that step down through the list. The plugin retains the existing header proportions and a transparent page background. A short subtitle reads “All your important dates, in one place.” Browser checks cover 320px to 1200px.
 
 **Scheduled work dates are not deadlines.** Planned dates are excluded unless the task also has an actual deadline. Completed tasks and paused or already-ended recurring series are hidden.
 
@@ -26,7 +26,7 @@ The CI workflow makes preview ZIPs and phone/desktop screenshots available as do
 
 ## Recurring tasks and date meaning
 
-The recurring series setting **Ends on** is stored as repeatUntilDay. It marks the last date an occurrence can be scheduled; it is **not** a deadline to finish a particular task. We therefore label it **Series ends**.
+The recurring series setting **Ends on** is stored as repeatUntilDay. It marks the last date an occurrence can be scheduled; it is **not** a deadline to finish a particular task. We therefore label it **Repeats until**.
 
 Actual instances of a recurring task can also have their own deadline, and such instances appear as ordinary deadline entries with a recurring symbol. We do not invent or count projected future instances. An actual instance with a deadline and a series end date can appear separately, because they represent different dates and responsibilities.
 
