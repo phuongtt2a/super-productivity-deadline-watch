@@ -71,6 +71,170 @@ button:disabled{opacity:.45;cursor:wait}
 @media(max-width:430px){.top-right{gap:8px}.today-date{display:none}.deadline-entry{grid-template-columns:22px minmax(0,1fr) 92px;gap:8px}.entry-number{font-size:23px}.entry-title{font-size:14px}.rank-0 .entry-title{font-size:21px}.rank-1 .entry-title{font-size:19px}.rank-2 .entry-title{font-size:16px}.rank-0 .entry-number{font-size:27px}.rank-1 .entry-number{font-size:25px}.rank-2 .entry-number{font-size:23px}.entry-unit{font-size:10px}.entry-date{font-size:10px;margin-top:7px}.entry-details{gap:5px;margin-top:7px;font-size:10px}.entry-tag{font-size:9px;padding:3px 6px}}
 @media(max-width:350px){.app{padding-left:13px;padding-right:13px}.deadline-entry{grid-template-columns:24px minmax(0,1fr) 78px;gap:9px;padding:13px 9px}.deadline-entry.rank-0{padding:18px 11px}.deadline-entry.rank-1{padding:17px 10px}.deadline-entry.rank-2{padding:15px 10px}.rank-0 .entry-title{font-size:19px}.rank-1 .entry-title{font-size:17px}.rank-2 .entry-title{font-size:15px}.rank-0 .entry-number{font-size:25px}.rank-1 .entry-number{font-size:23px}.rank-2 .entry-number{font-size:21px}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
+/* NEO visual grammar: flat solid fills, near-square outlines, deliberate hard shadows.
+   Keep the original typography hierarchy and responsive task ordering. */
+:root{
+ --neo-ink:#25372d;
+ --neo-muted:#455b4e;
+ --neo-paper:#f4f1e7;
+ --neo-coral:#ffb6a5;
+ --neo-gold:#ffe09a;
+ --neo-mint:#c7eacb;
+ --neo-blue:#d3e7ee;
+ --neo-lilac:#ded2f3;
+}
+.topbar{margin-bottom:17px}
+.intent-line{
+ margin:0 0 22px 1px;
+ padding:0 0 0 12px;
+ border-left:4px solid var(--accent);
+ font-size:clamp(14px,1.6vw,18px);
+ font-weight:690;
+ line-height:1.5;
+ letter-spacing:-.02em;
+}
+.refresh{
+ color:var(--neo-ink);
+ background:var(--neo-gold);
+ border:2px solid var(--neo-ink);
+ border-radius:4px;
+ box-shadow:3px 3px 0 var(--neo-ink);
+}
+.refresh:hover{background:#f6d078;transform:translate(1px,1px);box-shadow:2px 2px 0 var(--neo-ink)}
+.refresh:active{transform:translate(3px,3px);box-shadow:none}
+.summary-line{gap:8px 15px;margin:0 0 21px 2px}
+.summary-line strong{font-weight:800}
+.summary-line .tiny-dot{width:5px;height:5px;border-radius:0;background:var(--accent)}
+.timeline{gap:14px;padding:0 9px 10px 0}
+.deadline-entry{
+ --neo-surface:var(--neo-paper);
+ --neo-detail:var(--neo-ink);
+ color:var(--neo-ink);
+ border:2px solid var(--neo-ink);
+ border-radius:5px;
+ background:var(--neo-surface);
+ box-shadow:2px 2px 0 var(--neo-ink);
+ grid-template-columns:37px minmax(0,1fr) minmax(130px,190px);
+ gap:clamp(12px,1.7vw,22px);
+ padding:17px clamp(15px,2.4vw,26px);
+}
+.deadline-entry:before{display:none}
+.deadline-entry.tone-overdue{--neo-surface:var(--neo-coral);--neo-detail:#923c32}
+.deadline-entry.tone-today{--neo-surface:var(--neo-gold);--neo-detail:#744e18}
+.deadline-entry.tone-soon{--neo-surface:var(--neo-mint);--neo-detail:#315f43}
+.deadline-entry.tone-later{--neo-surface:var(--neo-blue);--neo-detail:#345e69}
+.deadline-entry.kind-series{--neo-surface:var(--neo-lilac);--neo-detail:#5c467e}
+.deadline-entry.rank-0{
+ border-width:3px;
+ border-radius:5px;
+ box-shadow:6px 6px 0 var(--neo-ink);
+ padding:25px clamp(16px,2.5vw,28px);
+}
+.deadline-entry.rank-1{
+ border-radius:5px;
+ box-shadow:5px 5px 0 var(--neo-ink);
+ padding:22px clamp(15px,2.4vw,26px);
+}
+.deadline-entry.rank-2{
+ border-radius:5px;
+ box-shadow:4px 4px 0 var(--neo-ink);
+ padding:20px clamp(15px,2.4vw,26px);
+}
+.entry-index{
+ align-self:start;
+ display:grid;
+ place-items:center;
+ width:34px;height:32px;
+ padding:0;
+ color:#fff;
+ background:var(--neo-ink);
+ border:2px solid var(--neo-ink);
+ border-radius:3px;
+ font-size:12px;
+ font-weight:850;
+ letter-spacing:0;
+}
+.rank-0 .entry-index{font-size:16px;height:38px}
+.rank-1 .entry-index{font-size:14px;height:35px}
+.entry-title{color:var(--neo-ink);font-weight:750;letter-spacing:-.035em}
+.rank-0 .entry-title{font-weight:850;letter-spacing:-.055em}
+.rank-1 .entry-title{font-weight:820;letter-spacing:-.05em}
+.rank-2 .entry-title{font-weight:780;letter-spacing:-.045em}
+.entry-action:hover .entry-title{text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:4px}
+.entry-details{gap:7px 9px;margin-top:10px;color:var(--neo-muted)}
+.entry-project{min-width:0;overflow-wrap:anywhere;font-weight:600}
+.entry-tag{
+ border:2px solid var(--neo-ink);
+ border-radius:3px;
+ background:#fffefa;
+ color:var(--neo-ink);
+ box-shadow:2px 2px 0 var(--neo-ink);
+ font-weight:800;
+ letter-spacing:.015em;
+ padding:3px 7px;
+}
+.entry-tag.repeat{border:1.5px solid var(--neo-ink);background:transparent;color:var(--neo-ink);box-shadow:none}
+.entry-number{color:var(--neo-ink);font-weight:860;letter-spacing:-.065em}
+.entry-unit{color:var(--neo-detail);font-weight:800}
+.entry-date{color:var(--neo-muted);font-weight:600}
+.deadline-entry.kind-series .entry-date{color:#56416c}
+.footnote{max-width:800px;color:var(--muted);margin-top:25px}
+@media(max-width:700px){
+ .app{padding:18px 18px 30px}
+ .topbar{margin-bottom:15px}
+ .intent-line{margin-bottom:18px}
+ .timeline{gap:13px;padding-right:8px}
+ .deadline-entry{grid-template-columns:27px minmax(0,1fr) minmax(91px,120px);gap:9px;padding:14px 13px}
+ .deadline-entry.rank-0{padding:21px 15px}
+ .deadline-entry.rank-1{padding:18px 14px}
+ .deadline-entry.rank-2{padding:16px 14px}
+ .entry-index{width:26px;height:26px;font-size:11px}
+ .rank-0 .entry-index{width:28px;height:31px;font-size:13px}
+ .rank-1 .entry-index{width:27px;height:29px;font-size:12px}
+}
+@media(max-width:430px){
+ .timeline{padding-right:7px}
+ .deadline-entry{grid-template-columns:24px minmax(0,1fr) 92px;gap:8px}
+ .entry-index{width:23px;height:25px;font-size:10px}
+ .rank-0 .entry-index{width:24px;height:29px}
+ .rank-1 .entry-index{width:24px;height:28px}
+ .entry-details{gap:6px;margin-top:8px}
+ .entry-tag{padding:3px 5px;font-size:9px}
+}
+@media(max-width:360px){
+ .app{padding-left:13px;padding-right:13px}
+ .deadline-entry{
+   grid-template-columns:25px minmax(0,1fr);
+   column-gap:10px;
+   row-gap:4px;
+   padding:14px 12px;
+ }
+ .deadline-entry.rank-0{padding:19px 13px}
+ .deadline-entry.rank-1{padding:17px 12px}
+ .deadline-entry.rank-2{padding:15px 12px}
+ .entry-index{grid-column:1;grid-row:1}
+ .entry-main{grid-column:2;grid-row:1}
+ .entry-countdown{
+   grid-column:2;
+   grid-row:2;
+   display:flex;
+   flex-wrap:wrap;
+   align-items:baseline;
+   justify-content:flex-start;
+   gap:4px 8px;
+   text-align:left;
+   margin-top:5px;
+ }
+ .entry-number,.rank-0 .entry-number,.rank-1 .entry-number,.rank-2 .entry-number{font-size:26px}
+ .entry-unit{font-size:11px}
+ .entry-date{flex-basis:100%;margin-top:1px}
+ .entry-title{font-size:14px}.rank-2 .entry-title{font-size:16px}
+ .rank-0 .entry-title{font-size:21px}
+ .rank-1 .entry-title{font-size:18px}
+}
+@media(prefers-reduced-motion:reduce){.refresh{transition:none}}
+
 </style>
 </head>
 <body>
@@ -91,12 +255,13 @@ button:disabled{opacity:.45;cursor:wait}
       <button type="button" class="refresh" id="refresh" title="Refresh deadlines" aria-label="Refresh deadlines">↻</button>
     </div>
   </header>
+  <p class="intent-line">All your important dates, in one place.</p>
   <div class="summary-line" aria-label="Deadline summary">
     <span id="overdue-summary"><strong id="overdue-count">0</strong> overdue</span>
     <span class="tiny-dot" aria-hidden="true"></span>
     <span><strong id="soon-count">0</strong> within 7 days</span>
     <span class="tiny-dot" aria-hidden="true"></span>
-    <span><strong id="total-count">0</strong> dates to watch</span>
+    <span><strong id="total-count">0</strong> important dates</span>
   </div>
   <p class="notice hidden" id="demo-note">Preview data only. Install in Super Productivity to see your deadlines.</p>
   <p class="notice error hidden" id="error-note" role="alert"></p>
@@ -104,7 +269,7 @@ button:disabled{opacity:.45;cursor:wait}
     <ol class="timeline" id="list" aria-live="polite" aria-busy="false"></ol>
     <div class="empty hidden" id="empty"><strong>Room to breathe.</strong>No upcoming deadlines or series end dates right now.</div>
   </section>
-  <p class="footnote">Series ends = the last recurring occurrence, not an individual task deadline. Scheduled work dates are not deadlines.</p>
+  <p class="footnote">“Repeats until” is the last day a recurring task repeats—not a date by which it must be completed. Scheduled work dates are not deadlines.</p>
 </main>
 <script>
 "use strict";
@@ -226,15 +391,15 @@ function buildRow(entry,index) {
   main.appendChild(buttonOrText);
   const details=elem("div","entry-details");
   details.appendChild(elem("span","entry-project",entry.project));
-  details.appendChild(elem("span","entry-tag",entry.kind==="series"?"Series ends":"Deadline"));
-  if(entry.kind==="task"&&entry.isRecurring)details.appendChild(elem("span","entry-tag repeat","Repeats"));
+  details.appendChild(elem("span","entry-tag",entry.kind==="series"?"Repeats until":"Task"));
+  if(entry.kind==="task"&&entry.isRecurring)details.appendChild(elem("span","entry-tag repeat","Recurring"));
   main.appendChild(details);
   row.appendChild(main);
   const right=elem("div","entry-countdown");
   const visual=countdownVisual(entry);
   right.appendChild(elem("strong","entry-number",visual.number));
   right.appendChild(elem("div","entry-unit",visual.unit));
-  right.appendChild(elem("div","entry-date",(entry.kind==="series"?"Ends on · ":"Deadline · ")+formattedDate(entry.info)));
+  right.appendChild(elem("div","entry-date",(entry.kind==="series"?"Last repeat · ":"Due · ")+formattedDate(entry.info)));
   row.appendChild(right);
   return row;
 }
