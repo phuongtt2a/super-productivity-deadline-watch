@@ -1,0 +1,32 @@
+name: Bug report
+description: Report broken behavior in Deadline Watch
+title: "bug: "
+labels: [bug]
+body:
+  - type: textarea
+    id: observed
+    attributes:
+      label: What happened?
+      description: Do not include personal task data or access tokens.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Super Productivity and plugin versions
+  - type: input
+    id: platform
+    attributes:
+      label: Browser, OS, or mobile device
