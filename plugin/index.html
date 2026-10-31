@@ -7,136 +7,143 @@
 <title>Deadline Watch — Super Productivity</title>
 <style>
 :root{
-  --dw-ink:var(--text-color,#26382f);
-  --dw-muted:var(--text-color-muted,#6b7b73);
-  --dw-primary:var(--c-primary,#537a67);
-  --dw-line:var(--divider-color,rgba(100,120,110,.22));
-  --dw-card:color-mix(in srgb,var(--card-bg,#fff) 64%,transparent);
-  --dw-hover:color-mix(in srgb,var(--c-primary,#537a67) 8%,transparent);
-  --dw-warn:var(--color-danger,#b34d46);
-  --dw-font:var(--font-primary-stack,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif);
+ --ink:var(--text-color,#26382f);--muted:var(--text-color-muted,#76837a);
+ --accent:var(--c-primary,#547a64);--line:var(--divider-color,rgba(99,122,107,.21));
+ --surface:color-mix(in srgb,var(--card-bg,#fff) 76%,transparent);
+ --soft:color-mix(in srgb,var(--card-bg,#fff) 46%,transparent);
+ --highlight:color-mix(in srgb,var(--c-primary,#547a64) 8%,transparent);
+ --danger:var(--color-danger,#ad5049);
+ --font:var(--font-primary-stack,system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif);
 }
 *,*::before,*::after{box-sizing:border-box}
-html,body{margin:0;min-width:0;background:transparent!important;color:var(--dw-ink);font-family:var(--dw-font)}
-body{-webkit-font-smoothing:antialiased;min-height:100dvh}
+html,body{min-width:0;margin:0;background:transparent!important;color:var(--ink);font-family:var(--font)}
+body{min-height:100dvh;-webkit-font-smoothing:antialiased}
 button{font:inherit;color:inherit;cursor:pointer}
-button:focus-visible{outline:2px solid var(--dw-primary);outline-offset:3px}
-button:disabled{opacity:.6;cursor:wait}
-.app{width:min(1160px,100%);margin:0 auto;padding:clamp(20px,3.3vw,42px) clamp(15px,4vw,50px) 55px}
-header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:clamp(26px,4.4vw,50px)}
-.identity{display:flex;align-items:center;gap:12px;min-width:0}
-.logo{width:44px;height:44px;flex:none;color:var(--dw-primary)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+button:disabled{opacity:.55}
+.app{max-width:1080px;width:100%;margin:0 auto;padding:clamp(22px,3.4vw,44px) clamp(15px,4.4vw,55px) 60px}
+header{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-bottom:clamp(40px,5.4vw,66px)}
+.identity{display:flex;align-items:center;gap:11px;min-width:0}
+.logo{display:grid;place-items:center;width:42px;height:42px;flex:none;color:var(--accent)}
 .logo svg{display:block;width:100%;height:100%}
-.brand{font-size:18px;font-weight:750;letter-spacing:-.035em}
-.credit{font-size:11px;color:var(--dw-muted);margin-top:3px}
-.header-side{display:flex;align-items:center;gap:12px}
-.date-now{font-size:12px;color:var(--dw-muted);font-weight:650;white-space:nowrap}
-.refresh{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--dw-line);border-radius:50%;background:var(--dw-card);font-size:19px}
-.refresh:hover,.filter:hover{background:var(--dw-hover)}
-.hero{display:flex;justify-content:space-between;align-items:end;gap:18px;margin-bottom:24px}
-.eyebrow{font-size:11px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;color:var(--dw-primary);margin:0 0 9px}
-h1{font-size:clamp(31px,4.2vw,50px);font-weight:670;line-height:1.08;letter-spacing:-.055em;margin:0}
-.subhead{font-size:clamp(12px,1.3vw,14px);color:var(--dw-muted);margin:12px 0 0;line-height:1.55}
-.hero-note{font-size:12px;color:var(--dw-muted);white-space:nowrap}
-.summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:0 0 29px}
-.metric{border:1px solid var(--dw-line);border-radius:15px;background:var(--dw-card);padding:17px 19px;min-width:0}
-.metric strong{display:block;font-size:clamp(22px,2.7vw,30px);line-height:1.15;font-weight:700;font-variant-numeric:tabular-nums}
-.metric span{display:block;color:var(--dw-muted);font-size:12px;margin-top:7px}
-.metric.overdue strong{color:var(--dw-warn)}
-.list-header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:0 0 14px}
-.list-header h2{font-size:18px;letter-spacing:-.025em;margin:0;font-weight:700}
-.filter-set{display:flex;flex-wrap:wrap;gap:6px}
-.filter{border:1px solid var(--dw-line);border-radius:999px;background:var(--dw-card);padding:8px 12px;min-height:38px;font-size:12px;font-weight:650}
-.filter[aria-pressed="true"]{border-color:var(--dw-primary);color:var(--dw-primary);background:var(--dw-hover)}
-.task-list{border-top:1px solid var(--dw-line)}
-.item{display:grid;grid-template-columns:minmax(0,1fr) minmax(115px,150px);align-items:center;gap:15px;padding:17px 6px;border-bottom:1px solid var(--dw-line);min-width:0}
-.item-main{display:flex;align-items:center;text-align:left;gap:12px;min-width:0}
-.item-button{width:100%;border:0;background:transparent;padding:0;text-align:left;border-radius:7px}
-.item-button:hover .item-title{text-decoration:underline;text-underline-offset:3px}
-.item-icon{flex:none;width:35px;height:35px;display:grid;place-items:center;border:1px solid var(--dw-line);border-radius:11px;color:var(--dw-primary);font-size:18px;background:var(--dw-card)}
-.item-icon.series{font-size:20px}
-.item-copy{min-width:0}
-.item-title{font-weight:650;font-size:clamp(13px,1.35vw,16px);line-height:1.45;overflow-wrap:anywhere}
-.item-meta{font-size:11px;color:var(--dw-muted);line-height:1.55;margin-top:4px;overflow-wrap:anywhere}
-.item-meta .dot{padding:0 7px}
-.countdown{text-align:right;min-width:0}
-.countdown strong{font-size:clamp(14px,1.7vw,18px);font-weight:750;display:block;line-height:1.3;font-variant-numeric:tabular-nums}
-.countdown small{font-size:11px;color:var(--dw-muted);display:block;margin-top:5px}
-.countdown.past strong{color:var(--dw-warn)}
-.countdown.soon strong{color:var(--dw-primary)}
-.notice,.empty{border:1px solid var(--dw-line);background:var(--dw-card);border-radius:14px;padding:14px 17px;color:var(--dw-muted);font-size:13px;line-height:1.6;margin:0 0 15px}
-.notice.error{color:var(--dw-warn)}
-.empty{padding:38px 20px;text-align:center;margin-top:14px}
-.empty strong{color:var(--dw-ink);display:block;font-size:16px;margin-bottom:7px}
+.brand{font-size:17px;font-weight:750;letter-spacing:-.035em}
+.credit{font-size:11px;color:var(--muted);margin-top:4px}
+.header-side{display:flex;align-items:center;gap:14px}
+.date-now{font-size:12px;color:var(--muted);white-space:nowrap}
+.refresh{display:grid;place-items:center;width:40px;height:40px;border:1px solid var(--line);border-radius:50%;background:var(--soft);font-size:19px}
+.refresh:hover,.row-button:hover{background:var(--highlight)}
+.eyebrow{text-transform:uppercase;letter-spacing:.13em;font-size:11px;font-weight:750;color:var(--accent);margin:0 0 11px}
+h1{font-size:clamp(34px,4.7vw,54px);letter-spacing:-.055em;font-weight:640;line-height:1.13;margin:0}
+.subhead{color:var(--muted);font-size:clamp(13px,1.55vw,15px);line-height:1.6;margin:12px 0 0}
+.hero{margin:0 0 24px}
+.overview{color:var(--muted);font-size:12px;display:flex;flex-wrap:wrap;gap:8px 18px;margin:0 0 22px}
+.overview strong{color:var(--ink);font-weight:730}
+.overview strong.alert{color:var(--danger)}
+.featured{padding:clamp(23px,3.6vw,38px);border-radius:20px;background:var(--surface);border:1px solid var(--line);box-shadow:0 8px 35px rgba(21,46,33,.035);margin-bottom:35px;position:relative;overflow:hidden}
+.featured::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--accent)}
+.featured.is-overdue::before{background:var(--danger)}
+.featured-head{color:var(--accent);font-size:11px;font-weight:780;letter-spacing:.12em;text-transform:uppercase;margin:0 0 22px}
+.featured.is-overdue .featured-head{color:var(--danger)}
+.featured-body{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px;align-items:center}
+.featured-button{display:block;border:0;background:transparent;text-align:left;padding:0;min-width:0}
+.featured-title{display:block;font-weight:680;letter-spacing:-.04em;font-size:clamp(23px,3.1vw,36px);line-height:1.25;overflow-wrap:anywhere}
+.featured-button:hover .featured-title{text-decoration:underline;text-underline-offset:4px}
+.featured-meta{display:block;color:var(--muted);font-size:12px;line-height:1.6;margin-top:12px}
+.featured-time{text-align:right;min-width:125px}
+.featured-number{font-size:clamp(27px,4.3vw,48px);font-weight:720;letter-spacing:-.05em;line-height:1.1;font-variant-numeric:tabular-nums}
+.featured.is-overdue .featured-number{color:var(--danger)}
+.featured.is-urgent:not(.is-overdue) .featured-number{color:var(--accent)}
+.featured-date{display:block;font-size:12px;color:var(--muted);margin-top:9px;line-height:1.5}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:0 2px 15px}
+h2{font-size:18px;letter-spacing:-.025em;font-weight:700;margin:0}
+.section-caption{font-size:12px;color:var(--muted)}
+.task-list{border-top:1px solid var(--line)}
+.item{display:grid;grid-template-columns:minmax(0,1fr) minmax(105px,170px);align-items:center;gap:14px;padding:18px 4px;border-bottom:1px solid var(--line)}
+.row-button{display:block;width:100%;padding:5px 2px;border:0;background:transparent;border-radius:6px;text-align:left;min-width:0}
+.item-title{display:block;font-weight:650;line-height:1.45;font-size:clamp(13px,1.45vw,16px);overflow-wrap:anywhere}
+.item-meta{display:block;color:var(--muted);font-size:11px;line-height:1.6;margin-top:5px}
+.row-count{text-align:right;min-width:0}
+.row-count strong{font-size:clamp(14px,1.9vw,19px);font-weight:740;display:block;line-height:1.4}
+.row-count.past strong{color:var(--danger)}
+.row-count.soon strong{color:var(--accent)}
+.row-count small{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-top:5px}
+.series-block{margin-top:52px}
+.series-caption{margin:9px 2px 20px;color:var(--muted);font-size:12px;line-height:1.65}
+.series-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(105px,170px);gap:14px;padding:15px 4px;border-bottom:1px solid var(--line);align-items:center}
+.series-title{font-size:14px;font-weight:580;line-height:1.45;overflow-wrap:anywhere}
+.series-meta{font-size:11px;color:var(--muted);margin-top:5px}
+.series-when{text-align:right}
+.series-when strong{font-weight:650;font-size:13px;display:block}
+.series-when small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+.notice,.empty{border:1px solid var(--line);background:var(--soft);color:var(--muted);font-size:13px;line-height:1.6;border-radius:13px;padding:14px 16px;margin:0 0 20px}
+.notice.error{color:var(--danger)}
+.empty{padding:34px 20px;text-align:center}
+.empty strong{font-size:16px;color:var(--ink);display:block;margin-bottom:6px}
 .hidden{display:none!important}
-.footnote{font-size:11px;color:var(--dw-muted);line-height:1.6;margin:25px 4px 0}
-@media(max-width:690px){
- .app{padding:22px 16px 38px}
- header{margin-bottom:31px}
- .hero{display:block;margin-bottom:24px}
- .hero-note{display:none}
- .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
- .metric{padding:14px}
- .item{grid-template-columns:minmax(0,1fr) 105px;gap:8px;padding:15px 0}
- .item-main{gap:9px}
- .item-icon{width:31px;height:31px}
+.footnote{font-size:11px;color:var(--muted);line-height:1.7;margin:30px 2px 0}
+@media(max-width:600px){
+ .app{padding:20px 15px 40px}
+ header{margin-bottom:39px}
+ .featured{padding:24px 20px;border-radius:16px;margin-bottom:31px}
+ .featured-body{grid-template-columns:minmax(0,1fr);gap:20px}
+ .featured-time{text-align:left;min-width:0}
+ .featured-number{font-size:32px}
+ .featured-head{margin-bottom:17px}
+ .item,.series-row{grid-template-columns:minmax(0,1fr) 104px;gap:8px}
 }
 @media(max-width:350px){
  .app{padding-left:12px;padding-right:12px}
  .date-now{display:none}
- .item{grid-template-columns:minmax(0,1fr) 97px}
+ .item,.series-row{grid-template-columns:minmax(0,1fr) 98px}
  .item-title{font-size:13px}
- .countdown strong{font-size:13px}
- .filter{padding:7px 10px}
+ .row-count strong{font-size:13px}
 }
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+
 </style>
 </head>
 <body>
 <div class="app">
   <header>
     <div class="identity">
-      <div class="logo" aria-hidden="true">
-        <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="5" y="12" width="43" height="42" rx="8"/>
-          <path d="M15 6v12M36 6v12M5 24h43"/>
-          <circle cx="42" cy="41" r="17" fill="var(--dw-card,#fff)"/>
-          <path d="M42 31v11l7 5"/>
-        </svg>
-      </div>
+      <div class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="5" y="12" width="43" height="42" rx="8"/><path d="M15 6v12M36 6v12M5 24h43"/>
+        <circle cx="42" cy="41" r="17" fill="var(--surface,#fff)"/><path d="M42 31v11l7 5"/>
+      </svg></div>
       <div><div class="brand">Deadline Watch</div><div class="credit">for Super Productivity</div></div>
     </div>
-    <div class="header-side">
-      <span class="date-now" id="today-date"></span>
-      <button class="refresh" type="button" id="refresh" title="Refresh deadlines" aria-label="Refresh deadlines">↻</button>
-    </div>
+    <div class="header-side"><span class="date-now" id="today-date"></span><button type="button" class="refresh" id="refresh" aria-label="Refresh deadlines" title="Refresh">↻</button></div>
   </header>
+
   <section class="hero">
-    <div><p class="eyebrow">YOUR DEADLINES, IN VIEW</p><h1>Know what's coming.</h1>
-    <p class="subhead">Nearest first. The time you have left, at a glance.</p></div>
-    <p class="hero-note">A little awareness goes a long way.</p>
+    <p class="eyebrow">A LITTLE SPACE TO STAY AHEAD</p>
+    <h1>Know what's coming.</h1>
+    <p class="subhead">Every deadline, in view. The nearest one deserves your attention.</p>
   </section>
-  <section class="summary" aria-label="Deadline overview">
-    <div class="metric overdue"><strong id="overdue-count">0</strong><span>Overdue tasks</span></div>
-    <div class="metric"><strong id="soon-count">0</strong><span>Next 7 days</span></div>
-    <div class="metric"><strong id="later-count">0</strong><span>Later</span></div>
-    <div class="metric"><strong id="series-count">0</strong><span>Series ending</span></div>
-  </section>
-  <div class="notice hidden" id="demo-note">Preview data only. Install this plugin in Super Productivity to see your own deadlines.</div>
+  <div class="overview" aria-label="Deadline summary">
+    <span><strong id="overdue-count">0</strong> overdue</span>
+    <span><strong id="soon-count">0</strong> within 7 days</span>
+    <span><strong id="total-count">0</strong> open deadlines</span>
+  </div>
+  <div class="notice hidden" id="demo-note">Preview data only. Install in Super Productivity to see your deadlines.</div>
   <div class="notice error hidden" id="error-note" role="alert"></div>
-  <section aria-label="Upcoming deadline list">
-    <div class="list-header"><h2>Coming up <span id="visible-count" style="font-size:12px;color:var(--dw-muted);font-weight:500"></span></h2>
-      <div class="filter-set" role="group" aria-label="Show">
-        <button class="filter" type="button" data-filter="all" aria-pressed="true">All</button>
-        <button class="filter" type="button" data-filter="task" aria-pressed="false">Task deadlines</button>
-        <button class="filter" type="button" data-filter="series" aria-pressed="false">Series ends</button>
-      </div>
-    </div>
+
+  <section class="featured hidden" id="featured" aria-label="Nearest deadline" aria-live="polite"></section>
+
+  <section aria-label="Task deadlines">
+    <div class="section-head"><h2>On the horizon</h2><span id="remaining-count" class="section-caption"></span></div>
     <div class="task-list" id="list" aria-live="polite" aria-busy="false"></div>
-    <div class="empty hidden" id="empty"><strong>Nothing pressing right now.</strong>Tasks with deadlines and recurring series end dates will appear here.</div>
+    <div id="empty" class="empty hidden"><strong>Room to breathe.</strong>No unfinished tasks with deadlines right now.</div>
   </section>
-  <p class="footnote">A scheduled work date is not a deadline. “Series ends” marks the last day a recurrence can occur; it does not mean an unfinished task is due. Completed tasks and paused recurring series are omitted.</p>
+
+  <section class="series-block hidden" id="series-section" aria-label="Recurring series end dates">
+    <div class="section-head"><h2>Series ending</h2><span id="series-count" class="section-caption"></span></div>
+    <p class="series-caption">An “Ends on” date marks the last recurrence, not a task deadline.</p>
+    <div id="series-list" class="task-list"></div>
+  </section>
+  <p class="footnote">Work scheduled for a day is not necessarily due that day. Deadline Watch only counts actual task deadlines; completed tasks are omitted.</p>
 </div>
+
 <script>
 "use strict";
 const $ = id => document.getElementById(id);
@@ -222,45 +229,81 @@ function elem(tag,className,textValue){
 }
 function buildRow(entry) {
   const row=elem("div","item");
-  const main=elem("div","item-main");
-  const actionable=entry.kind==="task";
-  const item=elem(actionable?"button":"div",actionable?"item-button":"item-copy");
-  if(actionable){item.type="button";item.dataset.taskId=entry.taskId;item.setAttribute("aria-label","Open "+entry.title+" in Super Productivity");}
-  const inner=elem("div","item-main");
-  inner.appendChild(elem("span","item-icon"+(entry.kind==="series"?" series":""),entry.kind==="series"?"↻":"◷"));
-  const copy=elem("span","item-copy");
-  copy.appendChild(elem("span","item-title",entry.title));
-  const meta=elem("div","item-meta");
-  const kind=entry.kind==="series"?"Series ends":entry.isRecurring?"Recurring task":"Task deadline";
-  meta.textContent=entry.project+"  ·  "+kind;
-  copy.appendChild(meta);
-  inner.appendChild(copy);
-  item.appendChild(inner);
-  main.appendChild(item);
-  row.appendChild(main);
-  const countdown=elem("div","countdown "+entry.remaining.state);
-  countdown.appendChild(elem("strong","",entry.remaining.label));
-  countdown.appendChild(elem("small","",formattedDate(entry.info)));
-  row.appendChild(countdown);
+  const btn=elem("button","row-button");
+  btn.type="button";
+  btn.dataset.taskId=entry.taskId;
+  btn.setAttribute("aria-label","Open task: "+entry.title);
+  btn.appendChild(elem("span","item-title",entry.title));
+  btn.appendChild(elem("span","item-meta",entry.project+(entry.isRecurring?" · Recurring task":"")));
+  row.appendChild(btn);
+  const right=elem("div","row-count "+entry.remaining.state);
+  right.appendChild(elem("strong","",entry.remaining.label));
+  right.appendChild(elem("small","",formattedDate(entry.info)));
+  row.appendChild(right);
+  return row;
+}
+function buildFeature(entry) {
+  const box=elem("div","featured-body");
+  const btn=elem("button","featured-button");
+  btn.type="button";
+  btn.dataset.taskId=entry.taskId;
+  btn.setAttribute("aria-label","Open nearest deadline task: "+entry.title);
+  btn.appendChild(elem("span","featured-title",entry.title));
+  btn.appendChild(elem("span","featured-meta",entry.project+(entry.isRecurring?" · Recurring task":"")));
+  box.appendChild(btn);
+  const countdown=elem("div","featured-time");
+  countdown.appendChild(elem("strong","featured-number",entry.remaining.label));
+  countdown.appendChild(elem("span","featured-date","Deadline · "+formattedDate(entry.info)));
+  box.appendChild(countdown);
+  return box;
+}
+function buildSeriesRow(entry) {
+  const row=elem("div","series-row");
+  const left=elem("div","");
+  left.appendChild(elem("div","series-title",entry.title));
+  left.appendChild(elem("div","series-meta",entry.project));
+  row.appendChild(left);
+  const right=elem("div","series-when");
+  const ending=entry.remaining.days===0?"Ends today":entry.remaining.days===1?"Ends tomorrow":"Ends in "+entry.remaining.days+" days";
+  right.appendChild(elem("strong","",ending));
+  right.appendChild(elem("small","",formattedDate(entry.info)));
+  row.appendChild(right);
   return row;
 }
 function render() {
+  if(state.pointerActive){state.pending=true;return;}
   const now=new Date();
   setText("today-date",now.toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric"}));
-  // Recompute countdown at midnight without refetching user data.
   state.entries.forEach(e=>{e.remaining=calculateCountdown(e.info,now,e.kind);});
-  setText("overdue-count",state.entries.filter(e=>e.kind==="task" && e.remaining.state==="past").length);
-  setText("soon-count",state.entries.filter(e=>e.remaining.days>=0 && e.remaining.days<=7).length);
-  setText("later-count",state.entries.filter(e=>e.remaining.days>7).length);
-  setText("series-count",state.entries.filter(e=>e.kind==="series").length);
-  const visible=state.entries.filter(e=>state.filter==="all" || e.kind===state.filter);
-  setText("visible-count","("+visible.length+")");
-  for(const button of document.querySelectorAll("[data-filter]"))button.setAttribute("aria-pressed",String(button.dataset.filter===state.filter));
-  const container=$("list"),fragment=document.createDocumentFragment();
-  visible.forEach(entry=>fragment.appendChild(buildRow(entry)));
-  container.replaceChildren(fragment);
-  $("empty").classList.toggle("hidden",visible.length!==0);
+  const tasks=state.entries.filter(e=>e.kind==="task");
+  const series=state.entries.filter(e=>e.kind==="series");
+  const overdue=tasks.filter(e=>e.remaining.state==="past").length;
+  setText("overdue-count",overdue);
+  $("overdue-count").classList.toggle("alert",overdue>0);
+  setText("soon-count",tasks.filter(e=>e.remaining.days>=0&&e.remaining.days<=7).length);
+  setText("total-count",tasks.length);
+  const first=tasks[0];
+  const feature=$("featured");
+  feature.classList.toggle("hidden",!first);
+  if(first){
+    feature.classList.toggle("is-overdue",first.remaining.state==="past");
+    feature.classList.toggle("is-urgent",first.remaining.days<=7);
+    const head=elem("div","featured-head",first.remaining.state==="past"?"Attention · Overdue":"Your next deadline");
+    feature.replaceChildren(head,buildFeature(first));
+  }else{feature.replaceChildren();}
+  const rest=tasks.slice(1),list=$("list"),fragment=document.createDocumentFragment();
+  rest.forEach(e=>fragment.appendChild(buildRow(e)));
+  list.replaceChildren(fragment);
+  setText("remaining-count",rest.length?rest.length+" more":"");
+  $("empty").classList.toggle("hidden",tasks.length!==0);
+  const seriesBox=$("series-section"),seriesList=$("series-list");
+  seriesBox.classList.toggle("hidden",series.length===0);
+  setText("series-count",series.length+" series");
+  const seriesFragment=document.createDocumentFragment();
+  series.forEach(e=>seriesFragment.appendChild(buildSeriesRow(e)));
+  seriesList.replaceChildren(seriesFragment);
 }
+
 function preview() {
   const now=new Date();
   const offset=(n)=>{const x=new Date(now.getFullYear(),now.getMonth(),now.getDate()+n);return localDay(x);};
@@ -293,7 +336,7 @@ async function refresh() {
     if(state.pointerActive)state.pending=true;
     else render();
   }catch(err){errorMessage(err);}
-  finally{state.refreshing=false;$("refresh").disabled=false;$("list").setAttribute("aria-busy","false");}
+  finally{state.refreshing=false;$("refresh").disabled=false;$("list").setAttribute("aria-busy","false");if(state.pending&&!state.pointerActive){state.pending=false;scheduleRefresh();}}
 }
 let deferred=null;
 function scheduleRefresh() {
@@ -314,9 +357,7 @@ document.addEventListener("click",event=>{
     void state.api.selectTask(target.dataset.taskId).catch(errorMessage);
   }
 });
-document.querySelectorAll("[data-filter]").forEach(btn=>btn.addEventListener("click",()=>{
-  state.filter=btn.dataset.filter;render();
-}));
+
 $("refresh").addEventListener("click",()=>void refresh());
 window.addEventListener("focus",scheduleRefresh);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)scheduleRefresh();});
