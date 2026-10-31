@@ -19,9 +19,13 @@ class PluginTests(unittest.TestCase):
         script=html.split("<script>",1)[1].split("</script>",1)[0]
         result=subprocess.run(["node","--check"],input=script,text=True,capture_output=True)
         self.assertEqual(result.returncode,0,result.stderr)
-        for term in ("deadlineDay","deadlineWithTime","repeatUntilDay","getAppState()","selectTask(","BEGIN_CORE","END_CORE","Your next deadline","Series ending"):
+        for term in ("deadlineDay","deadlineWithTime","repeatUntilDay","getAppState()","selectTask(","BEGIN_CORE","END_CORE","Series ends","deadline-entry","entry-number","rank-0"):
             self.assertIn(term,html)
         self.assertIn("background:transparent!important",html)
+        self.assertIn("width:min(1220px,100%)",html)
+        self.assertNotIn("On the horizon",html)
+        self.assertNotIn("Know what\u0027s coming.",html)
+        self.assertNotIn("id=\"series-section\"",html)
         self.assertNotIn("deadlineDay:task.dueDay",html)
 
     def test_installable_zip(self):
