@@ -6,11 +6,12 @@ Deadline Watch is an independent, read-only dashboard for [Super Productivity](h
 
 ## What you see
 
-- Unfinished tasks with actual deadlines, sorted by the nearest deadline first (including overdue tasks).
+- **Featured next deadline:** The nearest unfinished task is highlighted in a large, calm card; an overdue deadline receives a distinct warning accent.
+- **All other deadlines:** A minimal list below shows each task, project, deadline date and days remaining, sorted nearest first.
 - Calendar-day countdowns: overdue, due today, tomorrow, or days left. Exact deadline times are shown when set.
 - Project names and a direct click to open an individual task in Super Productivity.
 - Recurring task series with **Ends on** dates, displayed separately as **Series ends** entries.
-- Summary counts and filters for All, Task deadlines, and Series ends.
+- **Quiet summary:** Overdue and upcoming counts without crowding the interface. Recurring-series end dates appear in a separate, low-emphasis section.
 - Responsive, accessible theme-aware UI that respects the host's wallpaper and font.
 
 **Scheduled work dates are not deadlines.** Planned dates are excluded unless the task also has an actual deadline. Completed tasks and paused or already-ended recurring series are hidden.
@@ -21,7 +22,7 @@ Once the first PR is approved and merged, download the installable **deadline-wa
 
 The ZIP contains exactly four files at its root: manifest.json, plugin.js, index.html, and icon.svg. Do not install the GitHub-generated source-code archive.
 
-Before the first release, the CI workflow makes preview builds and screenshots available as downloadable workflow artifacts for review.
+Before the first release, the CI workflow makes preview ZIPs and phone/desktop screenshots available as downloadable workflow artifacts for review. **Merging the approved first PR automatically creates the v1.0.0 Release; opening the PR does not publish it.**
 
 ## Recurring tasks and date meaning
 

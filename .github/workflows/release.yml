@@ -1,0 +1,85 @@
+name: Publish Deadline Watch
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: deadline-watch-release
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate and build installable ZIP
+        shell: bash
+        run: |
+          node tests/deadline-core.test.js
+          python -m unittest discover -s tests -p 'test_*.py' -v
+          VERSION="$(python -c 'import json; print(json.load(open("plugin/manifest.json"))["version"])')"
+          echo "TAG=v$VERSION" >> "$GITHUB_ENV"
+          python scripts/package.py --tag "v$VERSION"
+
+      - name: Browser verification before publishing
+        shell: bash
+        run: |
+          python -m pip install playwright==1.57.0
+          python -m playwright install --with-deps chromium
+          python tests/browser_check.py
+
+      - name: Create or refresh matching GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          NAME="deadline-watch-super-productivity.zip"
+          ASSET="dist/$NAME"
+          mkdir -p "$RUNNER_TEMP/previous" "$RUNNER_TEMP/verified"
+          if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
+            echo "Release $TAG exists; checking published ZIP."
+            if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json assets --jq '.assets[].name' | grep -Fxq "$NAME"; then
+              gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$NAME" --dir "$RUNNER_TEMP/previous"
+              if cmp -s "$ASSET" "$RUNNER_TEMP/previous/$NAME"; then
+                echo "The tested ZIP already matches the release."
+                exit 0
+              fi
+            fi
+            if ! gh release upload "$TAG" "$ASSET" --clobber --repo "$GITHUB_REPOSITORY"; then
+              echo "::error::Upload failed; attempting asset rollback."
+              if test -f "$RUNNER_TEMP/previous/$NAME"; then
+                gh release upload "$TAG" "$RUNNER_TEMP/previous/$NAME" --clobber --repo "$GITHUB_REPOSITORY" || true
+              fi
+              exit 1
+            fi
+          else
+            gh release create "$TAG" "$ASSET" \
+              --repo "$GITHUB_REPOSITORY" --target "$GITHUB_SHA" \
+              --title "Deadline Watch $TAG" --latest \
+              --notes "Deadline Watch: a calm nearest-first dashboard for task deadlines, days remaining, and separately labeled recurring-series end dates. Install the ZIP in Assets."
+          fi
+          gh release download "$TAG" --repo "$GITHUB_REPOSITORY" --pattern "$NAME" --dir "$RUNNER_TEMP/verified"
+          cmp "$ASSET" "$RUNNER_TEMP/verified/$NAME"
+          echo "Verified published Release ZIP byte-for-byte."
+          NOTES="$RUNNER_TEMP/notes.md"
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq '.body' > "$NOTES"
+          awk '/<!-- deadline-watch-build -->/{exit}{print}' "$NOTES" > "$RUNNER_TEMP/prior.md"
+          cp "$RUNNER_TEMP/prior.md" "$NOTES"
+          SHORT_SHA="$(git rev-parse --short HEAD)"
+          printf '\n<!-- deadline-watch-build -->\nLatest tested ZIP: commit [%s](https://github.com/%s/commit/%s). The Git tag is not moved for same-version fixes.\n' \
+            "$SHORT_SHA" "$GITHUB_REPOSITORY" "$GITHUB_SHA" >> "$NOTES"
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file "$NOTES"

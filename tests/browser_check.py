@@ -48,6 +48,10 @@ class BrowserTest(unittest.TestCase):
                 page.wait_for_function("window.__selected==='overdue'")
                 page.locator("[data-task-id='today']").click()
                 page.wait_for_function("window.__selected==='today'")
+                if width in (320,1200):
+                    folder=ROOT/"artifacts"
+                    folder.mkdir(exist_ok=True)
+                    page.screenshot(path=str(folder/("deadline-watch-"+str(width)+".png")),full_page=True)
                 page.close()
             browser.close()
 if __name__=="__main__":
